@@ -14,7 +14,7 @@ export class CenterService {
   }
 
   async findAll(): Promise<Center[]> {
-    return this.centerModel.find().exec();
+    return this.centerModel.find();
   }
 
   async findOne(id: string): Promise<Center | null> {

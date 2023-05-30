@@ -1,19 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Center } from 'src/center/schema/center.schema';
-import { Role } from '../model/role';
+import { Role } from '../model/role.enum';
 
 @Schema({
   timestamps: true,
 })
 export class User {
+  id: string;
+
   @Prop({
-    unique: true,
     required: true,
     trim: true,
   })
   name: string;
 
   @Prop({
+    unique: true,
     required: true,
     trim: true,
   })
@@ -28,6 +30,7 @@ export class User {
   @Prop({
     type: String,
     enum: Role,
+    default: Role.Student,
   })
   role: Role;
 
