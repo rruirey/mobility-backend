@@ -6,6 +6,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { USER_REQUIRED_KEY } from '../decorator/user-required.decorator';
+import { UserRequest } from '../model';
 import { UserService } from '../user.service';
 
 @Injectable()
@@ -13,7 +15,15 @@ export class UserGuard implements CanActivate {
   constructor(private userService: UserService, private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const isUserRequired = this.reflector.getAllAndOverride<boolean>(
+      USER_REQUIRED_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    if (!isUserRequired) {
+      return true;
+    }
+
+    const request = context.switchToHttp().getRequest<UserRequest>();
     if (!request.user) {
       throw new UnauthorizedException();
     }

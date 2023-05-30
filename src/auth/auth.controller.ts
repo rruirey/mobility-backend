@@ -7,9 +7,9 @@ import {
   HttpStatus,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common';
-import { UserGuard } from 'src/user/guard/user.guard';
+import { Roles } from 'src/user/decorator/roles.decorator';
+import { Role } from 'src/user/model';
 import { UserRequest } from 'src/user/model/user-request';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
@@ -39,7 +39,7 @@ export class AuthController {
     }
   }
 
-  @UseGuards(UserGuard)
+  @Roles(Role.Student)
   @Get('me')
   async me(@Request() req: UserRequest) {
     return req.user;

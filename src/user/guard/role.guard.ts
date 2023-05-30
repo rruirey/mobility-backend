@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import { ROLES_KEY } from '../decorator/roles.decorator';
 import { Role } from '../model/role.enum';
 
 @Injectable()
@@ -15,15 +16,17 @@ export class RolesGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const roles = this.reflector.get<Role[]>('roles', context.getHandler());
+    const roles = this.reflector.get<Role[]>(ROLES_KEY, context.getHandler());
     if (!roles) {
       return true;
     }
+
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     if (!user) {
       throw new UnauthorizedException();
     }
+
     return roles.includes(user.role);
   }
 }

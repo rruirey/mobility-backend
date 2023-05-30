@@ -8,8 +8,8 @@ import { UserModule } from './user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    UserModule,
     AuthModule,
+    UserModule,
     CenterModule,
     MongooseModule.forRoot(process.env.DATABASE_URL || ''),
   ],
