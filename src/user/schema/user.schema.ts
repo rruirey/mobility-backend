@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { Center } from 'src/center/schema/center.schema';
 import { Role } from '../model/role.enum';
 
@@ -25,7 +26,7 @@ export class User {
     required: true,
     trim: true,
   })
-  password: string;
+  password?: string;
 
   @Prop({
     type: String,
@@ -35,6 +36,8 @@ export class User {
   role: Role;
 
   @Prop({
+    type: Types.ObjectId,
+    ref: 'Center',
     required: false,
   })
   center: Center;

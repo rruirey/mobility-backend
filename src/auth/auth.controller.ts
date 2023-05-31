@@ -3,27 +3,26 @@ import {
   ConflictException,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
   Post,
   Request,
+  UseGuards,
 } from '@nestjs/common';
-import { Roles } from 'src/user/decorator/roles.decorator';
-import { Role } from 'src/user/model';
-import { UserRequest } from 'src/user/model/user-request';
+import { UserRequired } from 'src/user/decorator/user-required.decorator';
+import { UserRequest } from 'src/user/model';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
-import { LoginUserAuthDto, RegisterUserAuthDto } from './dto';
+import { RegisterUserAuthDto } from './dto';
+import { LocalAuthGuard } from './guard/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
-  @HttpCode(HttpStatus.OK)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() body: LoginUserAuthDto) {
-    return this.authService.login(body);
+  async login(@Request() { user }: UserRequest) {
+    return this.authService.generateToken(user);
   }
 
   @Public()
@@ -39,9 +38,9 @@ export class AuthController {
     }
   }
 
-  @Roles(Role.Student)
+  @UserRequired()
   @Get('me')
-  async me(@Request() req: UserRequest) {
-    return req.user;
+  async me(@Request() { user }: UserRequest) {
+    return user;
   }
 }

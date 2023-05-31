@@ -1,4 +1,4 @@
-export interface AuthUser {
+export class JwtAuthPayload {
   id: string;
   email: string;
 }

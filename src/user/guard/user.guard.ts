@@ -6,8 +6,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { JwtPayloadRequest } from 'src/auth/model/jwt-payload-request';
 import { USER_REQUIRED_KEY } from '../decorator/user-required.decorator';
-import { UserRequest } from '../model';
 import { UserService } from '../user.service';
 
 @Injectable()
@@ -23,18 +23,18 @@ export class UserGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<UserRequest>();
-    if (!request.user) {
+    const request = context.switchToHttp().getRequest<JwtPayloadRequest>();
+    const auth = request.user;
+    if (!auth) {
       throw new UnauthorizedException();
     }
 
-    const { id } = request.user;
-    const user = await this.userService.findOne(id);
+    const user = await this.userService.findOne(auth.id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    request['user'] = user;
+    request.user = user;
     return true;
   }
 }

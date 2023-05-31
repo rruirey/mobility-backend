@@ -9,7 +9,7 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async findOne(id: string): Promise<User | null> {
-    return this.userModel.findById(id);
+    return this.userModel.findById(id).populate('center').select('-password');
   }
 
   async findByEmail(email: string): Promise<User | null> {

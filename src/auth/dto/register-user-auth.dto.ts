@@ -1,7 +1,21 @@
-import { IsNotEmpty } from 'class-validator';
-import { LoginUserAuthDto } from './login-user-auth.dto';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
-export class RegisterUserAuthDto extends LoginUserAuthDto {
+export class RegisterUserAuthDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @MinLength(4)
+  @MaxLength(16)
+  @IsString()
+  password: string;
+
   @IsNotEmpty()
   name: string;
 }
