@@ -7,9 +7,12 @@ export class CreateUserDto {
   @IsString()
   email: string;
 
+  @IsString()
+  name: string;
+
   @IsNotEmpty()
   @IsString()
-  password: string;
+  password: string | null;
 
   @IsOptional()
   role?: Role;

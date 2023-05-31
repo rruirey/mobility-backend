@@ -12,11 +12,16 @@ import { UserRequest } from 'src/user/model';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
 import { RegisterUserAuthDto } from './dto';
+import { GoogleAuthService } from './google/google-auth.service';
+import { GoogleOAuthGuard } from './guard/google-auth.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private googleAuthService: GoogleAuthService,
+  ) {}
 
   @Public()
   @UseGuards(LocalAuthGuard)
@@ -42,5 +47,20 @@ export class AuthController {
   @Get('me')
   async me(@Request() { user }: UserRequest) {
     return user;
+  }
+
+  // Google OAuth
+
+  @Public()
+  @Get('google')
+  @UseGuards(GoogleOAuthGuard)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async auth() {}
+
+  @Public()
+  @Get('google/callback')
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuthRedirect(@Request() { user }: UserRequest) {
+    return this.googleAuthService.registerOAuthUser(user);
   }
 }

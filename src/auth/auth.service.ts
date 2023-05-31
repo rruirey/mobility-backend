@@ -30,13 +30,6 @@ export class AuthService {
     return isMatch ? user : null;
   }
 
-  async generateToken(user: User) {
-    const payload = { id: user.id, email: user.email };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
-
   async singUp(user: RegisterUserAuthDto) {
     const { password } = user;
 
@@ -44,5 +37,12 @@ export class AuthService {
     user = { ...user, password: hasedPassword };
 
     return this.userService.create(user);
+  }
+
+  async generateToken(user: User) {
+    const payload = { id: user.id, email: user.email };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
