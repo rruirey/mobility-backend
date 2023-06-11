@@ -34,10 +34,11 @@ export class AuthController {
   @Post('signup')
   async singUp(@Body() body: RegisterUserAuthDto) {
     try {
-      return await this.authService.singUp(body);
+      await this.authService.singUp(body);
+      return { message: 'Te has registrado con éxito.' };
     } catch (error) {
       if (error.code === 11000) {
-        throw new ConflictException('User with provided email already exists');
+        throw new ConflictException('El email ya está en uso.');
       }
       throw error;
     }
@@ -61,6 +62,6 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleOAuthGuard)
   async googleAuthRedirect(@Request() { user }: UserRequest) {
-    return this.googleAuthService.registerOAuthUser(user);
+    return this.googleAuthService.validateOAuthLogin(user);
   }
 }

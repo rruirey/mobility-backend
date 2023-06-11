@@ -19,24 +19,24 @@ export class AuthService {
   async login(email: string, password: string): Promise<User | null> {
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('El usuario no se ha podido encontrar');
     }
 
     if (!user.password) {
-      throw new NotAcceptableException('User has no password');
+      throw new NotAcceptableException('El usuario no tiene contraseña');
     }
 
     const isMatch = await compare(password, user.password);
     return isMatch ? user : null;
   }
 
-  async singUp(user: RegisterUserAuthDto) {
-    const { password } = user;
+  async singUp(registerUser: RegisterUserAuthDto) {
+    const { password } = registerUser;
 
     const hasedPassword = await hash(password, 10);
-    user = { ...user, password: hasedPassword };
+    registerUser = { ...registerUser, password: hasedPassword };
 
-    return this.userService.create(user);
+    return await this.userService.create(registerUser);
   }
 
   async generateToken(user: User) {
