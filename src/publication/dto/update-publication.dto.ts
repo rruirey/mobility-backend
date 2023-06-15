@@ -7,6 +7,11 @@ export class UpdatePublicationDto {
   user?: string;
 
   @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  trip?: string;
+
+  @IsString()
   @IsOptional()
   image?: string;
 

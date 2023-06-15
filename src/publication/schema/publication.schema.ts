@@ -1,13 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @Schema({
   timestamps: true,
 })
 export class Publication {
   @Prop({
-    required: true,
+    type: Types.ObjectId,
+    ref: 'User',
+    required: false,
   })
   user: string;
+
+  @Prop({
+    required: true,
+  })
+  trip: string;
 
   @Prop({
     required: true,

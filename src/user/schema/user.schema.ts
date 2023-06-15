@@ -44,11 +44,6 @@ export class User {
   @Prop({
     required: false,
   })
-  trip: string;
-
-  @Prop({
-    required: false,
-  })
   token: string;
 }
 

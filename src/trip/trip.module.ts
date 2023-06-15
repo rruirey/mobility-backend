@@ -10,5 +10,6 @@ import { TripService } from './trip.service';
   ],
   providers: [TripService],
   controllers: [TripController],
+  exports: [TripService],
 })
 export class TripModule {}

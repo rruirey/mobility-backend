@@ -12,6 +12,7 @@ export class TripService {
   async create(trip: CreateTripDto): Promise<Trip> {
     const newtrip = new this.model({
       ...trip,
+      users: [trip.manager],
       code: uuidv4().slice(0, 8),
     });
     return newtrip.save();
@@ -26,7 +27,32 @@ export class TripService {
   }
 
   async findByUserId(id: string): Promise<Trip[]> {
-    return this.model.find({ user: id });
+    return this.model.find({ users: id });
+  }
+
+  async findCurrentByUserId(id: string): Promise<Trip | null> {
+    const today = new Date();
+    return this.model.findOne({
+      users: id,
+      start: { $lte: today },
+      end: { $gte: today },
+    });
+  }
+
+  async findUpcomingByUserId(id: string): Promise<Trip[]> {
+    const today = new Date();
+    return this.model
+      .find({
+        users: id,
+        start: { $gte: today },
+      })
+      .sort({ start: 1 });
+  }
+
+  async findOneByCode(code: string): Promise<Trip | null> {
+    return this.model.findOne({
+      code,
+    });
   }
 
   async findOne(id: string): Promise<Trip | null> {

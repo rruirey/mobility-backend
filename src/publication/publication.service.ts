@@ -20,7 +20,21 @@ export class PublicationService {
   }
 
   async findByUserId(id: string): Promise<Publication[]> {
-    return this.model.find({ user: id });
+    return this.model.find({ user: id }).sort({ createdAt: -1 });
+  }
+
+  async findByTripId(id: string): Promise<Publication[]> {
+    return this.model
+      .find({ trip: id })
+      .populate('user', 'name')
+      .sort({ createdAt: -1 });
+  }
+
+  async findByUserAndTripId(
+    user: string,
+    trip: string,
+  ): Promise<Publication[]> {
+    return this.model.find({ user, trip });
   }
 
   async findOne(id: string): Promise<Publication | null> {

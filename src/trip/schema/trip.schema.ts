@@ -4,6 +4,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
   timestamps: true,
 })
 export class Trip {
+  id: string;
+
   @Prop({
     required: true,
   })
@@ -33,6 +35,12 @@ export class Trip {
     required: true,
   })
   manager: string;
+
+  @Prop({
+    required: false,
+    default: [],
+  })
+  users: string[];
 
   @Prop({
     required: false,

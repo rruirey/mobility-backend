@@ -6,6 +6,10 @@ export class CreatePublicationDto {
   @IsOptional()
   user?: string;
 
+  @IsString()
+  @IsNotEmpty()
+  trip: string;
+
   @IsOptional()
   @IsString()
   image?: string;
