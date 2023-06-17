@@ -12,7 +12,7 @@
 - [Arquitectura](#arquitectura)
 - [Diseño](#diseño)
 - [Puesta en producción](#puesta-en-producción)
-- [Conclusiones](#diseño)
+- [Conclusiones](#conclusiones)
 
 ## Introducción
 
@@ -56,13 +56,11 @@ Esta elección de base de datos simplifica el desarrollo y brinda flexibilidad p
 
 ### React Native
 
-React Native es un poderoso marco de desarrollo que permite crear aplicaciones móviles multiplataforma con una única base de código. Al utilizar React Native, los desarrolladores pueden escribir una vez y ejecutar en múltiples plataformas, como iOS y Android. Esta capacidad de reutilización de código es fundamental, ya que evita la necesidad de desarrollar y mantener dos versiones separadas de la aplicación para cada plataforma.
+React Native es un framework que permite crear aplicaciones móviles multiplataforma utilizando una única base de código. Con React Native, los desarrolladores pueden escribir una vez y ejecutar en múltiples plataformas como iOS y Android. Esta reutilización de código es muy importante porque evita la necesidad de desarrollar y mantener dos versiones separadas de la aplicación para cada plataforma.
 
-La ventaja de esta enfoque radica en la eficiencia del proceso de desarrollo. Los equipos de desarrollo pueden concentrarse en escribir y perfeccionar el código una vez, en lugar de tener que abordar dos conjuntos distintos de código para las diferentes plataformas móviles. Esto reduce la carga de trabajo y acelera el tiempo de desarrollo, permitiendo que la aplicación llegue al mercado más rápidamente.
+La ventaja de este enfoque es la eficiencia del proceso de desarrollo. Los equipos de desarrollo pueden concentrarse en escribir y pulir el código al mismo tiempo en lugar de tener que lidiar con dos conjuntos de código diferentes para diferentes plataformas móviles. Esto reduce el esfuerzo y acelera el tiempo de desarrollo, lo que permite que las aplicaciones salgan al mercado más rápido. Ser capaz de usar una sola base de código en React Native también significa que no hay pérdida de funcionalidad o rendimiento.
 
-Además, la capacidad de utilizar una única base de código en React Native no implica ninguna pérdida de funcionalidad o rendimiento. Las aplicaciones desarrolladas con React Native tienen un rendimiento comparable al de las aplicaciones nativas, ya que el código se traduce en componentes nativos específicos de cada plataforma.
-
-En resumen, React Native ofrece una forma eficiente y productiva de desarrollar aplicaciones móviles multiplataforma. Al utilizar una única base de código, los equipos de desarrollo pueden ahorrar tiempo y esfuerzo, sin comprometer la calidad ni el rendimiento de la aplicación en diferentes plataformas móviles.
+Las aplicaciones desarrolladas con React Native tienen un rendimiento comparable al de las aplicaciones nativas porque el código se traduce en componentes nativos específicos de la plataforma. En resumen, React Native proporciona una forma eficiente y productiva de desarrollar aplicaciones móviles multiplataforma.
 
 ### NestJs
 
@@ -101,6 +99,18 @@ El backend, al utilizar el framework **NestJs**, nos permite aprovechar los bene
 Adicionalmente, al utilizar **TypeScript**, contamos con un sistema de tipos robusto que nos ayuda a prevenir errores en tiempo de compilación y facilita el mantenimiento y refactorización del código. Esto nos permite crear aplicaciones escalables y de fácil mantenimiento, con una arquitectura bien definida y desacoplada.
 
 En resumen, la combinación del framework **NestJs** y **TypeScript** en el backend nos proporciona una base sólida para desarrollar aplicaciones de alta calidad, con un enfoque en la legibilidad, mantenibilidad y escalabilidad del código.
+
+#### Autenticación
+
+Para la autenticación se han utilizado tokens **JWT**. Este sistema funciona de la siguiente forma.
+
+El servidor almacena un secreto el cual utiliza para generar este token JWT. Una vez el usuario inicia sesión generamos un token JWT con un payload que guarde información no sensible del usuario para poder identificar ese token con ese usuario.
+
+Una vez tenemos el token, se lo pasamos al usuario el cual deberá almacenar para poder acceder a los endpoints.
+
+Una vez tiene el usuario almacenado el token y quiere acceder a un endpoint protegido, debemos pasar por la cabecera este token para que el servidor lo revise.
+
+Una vez el servidor recibe este token, verificará si es valido y no ha expirado y extraerá el payload del token para inyectar en la request la información del usuario.
 
 #### Buenas practicas
 
