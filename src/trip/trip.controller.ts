@@ -7,9 +7,12 @@ import {
   NotFoundException,
   Param,
   Post,
+  Req,
   Request,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Request as ExpressRequest } from 'express';
+import { PublicationService } from 'src/publication/publication.service';
 import { Roles } from 'src/user/decorator/roles.decorator';
 import { UserRequired } from 'src/user/decorator/user-required.decorator';
 import { Role, UserRequest } from 'src/user/model';
@@ -18,7 +21,10 @@ import { TripService } from './trip.service';
 
 @Controller('trip')
 export class TripController {
-  constructor(private readonly tripService: TripService) {}
+  constructor(
+    private readonly tripService: TripService,
+    private readonly publicationService: PublicationService,
+  ) {}
 
   @Get()
   @Roles(Role.Admin)
@@ -124,6 +130,52 @@ export class TripController {
       );
     }
     return trip;
+  }
+
+  @UserRequired()
+  @Get('/publication/:id')
+  async findPublicationsByTripId(
+    @Param('id') id: string,
+    @Request() { user }: UserRequest,
+  ) {
+    const trip = await this.tripService.findOne(id);
+    if (!trip) {
+      throw new NotFoundException('No se ha encontrado el viaje indicado');
+    }
+
+    if (!trip.users.includes(user.id)) {
+      throw new UnauthorizedException(
+        'No tienes permisos para ver las publicaciones de este viaje',
+      );
+    }
+
+    const publication = await this.publicationService.findByTripId(id);
+    if (!publication) {
+      throw new NotFoundException(
+        'No se han encontrado publicaciones para el viaje indicado',
+      );
+    }
+
+    return publication;
+  }
+
+  @Roles(Role.Admin)
+  @Get('content/:id')
+  async findContentByTripId(
+    @Param('id') id: string,
+    @Req() req: ExpressRequest,
+  ) {
+    const content = await this.publicationService.findByTripId(id);
+    const host = `${req.protocol}://${req.get('Host')}`;
+
+    return content.map((publication) => {
+      const url = `${host}/publication/${publication.id}/image`;
+      return {
+        user: publication.user,
+        image: url,
+        description: publication.description,
+      };
+    });
   }
 
   @Post()

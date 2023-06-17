@@ -18,7 +18,6 @@ import * as fs from 'fs-extra';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { Public } from 'src/auth/decorator/public.decorator';
-import { TripService } from 'src/trip/trip.service';
 import { Roles } from 'src/user/decorator/roles.decorator';
 import { UserRequired } from 'src/user/decorator/user-required.decorator';
 import { Role, UserRequest } from 'src/user/model';
@@ -42,10 +41,7 @@ export const storage = {
 
 @Controller('publication')
 export class PublicationController {
-  constructor(
-    private publicationService: PublicationService,
-    private tripService: TripService,
-  ) {}
+  constructor(private publicationService: PublicationService) {}
 
   @Roles(Role.Admin)
   @Get()
@@ -56,8 +52,6 @@ export class PublicationController {
   @UserRequired()
   @Get('detail/:id')
   async findOne(@Request() { user }: UserRequest, @Param('id') id: string) {
-    // TODO: check this endpoint
-
     const publication = await this.publicationService.findOne(id);
     if (!publication) {
       throw new NotFoundException('Publicación no encontrada');
@@ -98,33 +92,6 @@ export class PublicationController {
       );
     }
     return publications;
-  }
-
-  @UserRequired()
-  @Get('/trip/:id')
-  async findAllByTrip(
-    @Param('id') id: string,
-    @Request() { user }: UserRequest,
-  ) {
-    const trip = await this.tripService.findOne(id);
-    if (!trip) {
-      throw new NotFoundException('No se ha encontrado el viaje indicado');
-    }
-
-    if (!trip.users.includes(user.id)) {
-      throw new UnauthorizedException(
-        'No tienes permisos para ver las publicaciones de este viaje',
-      );
-    }
-
-    const publication = await this.publicationService.findByTripId(id);
-    if (!publication) {
-      throw new NotFoundException(
-        'No se han encontrado publicaciones para el viaje indicado',
-      );
-    }
-
-    return publication;
   }
 
   @UserRequired()

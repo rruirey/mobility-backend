@@ -5,6 +5,8 @@ import { Types } from 'mongoose';
   timestamps: true,
 })
 export class Publication {
+  id: string;
+
   @Prop({
     type: Types.ObjectId,
     ref: 'User',
